@@ -10,22 +10,14 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 neonConfig.webSocketConstructor = ws;
 
-// Log para debug
-console.log('Diretório atual:', process.cwd());
-console.log('Arquivo .env:', path.resolve(process.cwd(), '.env'));
-console.log('DATABASE_URL definida:', !!process.env.DATABASE_URL);
-console.log('DATABASE_URL valor:', process.env.DATABASE_URL ? '[DEFINIDA]' : '[NÃO DEFINIDA]');
-
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
+// URL do banco de dados
+const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_vTrWVjeqkf93@ep-muddy-bar-acg7auww-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require';
 
 console.log('Configurando conexão com o banco de dados...');
+console.log('DATABASE_URL definida:', !!DATABASE_URL);
 
 export const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
+  connectionString: DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
