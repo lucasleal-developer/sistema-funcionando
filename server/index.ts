@@ -2,21 +2,27 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeNeonDb } from "./neondb";
+import { runMigrations } from "./runMigrations";
 
 log("Usando banco de dados Neon PostgreSQL");
-// Inicializa o banco de dados Neon
-initializeNeonDb()
-  .then(success => {
-    if (success) {
-      log("Inicialização do banco de dados Neon concluída com sucesso!");
+
+// Inicializa o banco de dados Neon e executa as migrações
+(async () => {
+  const dbInitialized = await initializeNeonDb();
+  if (dbInitialized) {
+    log("Inicialização do banco de dados Neon concluída com sucesso!");
+    
+    // Executa as migrações
+    const migrationsSuccess = await runMigrations();
+    if (migrationsSuccess) {
+      log("Migrações executadas com sucesso!");
     } else {
-      log("Falha na inicialização do banco de dados Neon, verificando logs para detalhes.");
+      log("Falha ao executar migrações, verificar logs para detalhes.");
     }
-  })
-  .catch(err => {
-    log(`Erro crítico na inicialização do banco de dados Neon: ${err}`);
-    log("Verificar se a conexão STRING está correta e a estrutura da base de dados Neon está configurada.");
-  });
+  } else {
+    log("Falha na inicialização do banco de dados Neon, verificando logs para detalhes.");
+  }
+})();
 
 const app = express();
 app.use(express.json());
