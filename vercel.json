@@ -6,12 +6,27 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/professionals",
+      "destination": "/api/professionals"
+    },
+    {
+      "source": "/api/activity-types",
+      "destination": "/api/activity-types"
+    },
+    {
+      "source": "/api/time-slots",
+      "destination": "/api/time-slots"
+    },
+    {
+      "source": "/api/schedules/:day",
+      "destination": "/api/schedules"
     },
     {
       "source": "/(.*)",
       "destination": "/"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "postgresql://neondb_owner:npg_vTrWVjeqkf93@ep-muddy-bar-acg7auww-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require"
+  }
 }
