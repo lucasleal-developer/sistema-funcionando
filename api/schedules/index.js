@@ -1,6 +1,8 @@
-import { pool } from '../../server/db';
+import { pool } from '../../server/db.js';
 
 export default async function handler(req, res) {
+  console.log('Iniciando endpoint /api/schedules');
+  
   // Configurar CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +20,7 @@ export default async function handler(req, res) {
   try {
     // Extrair o dia da semana da URL
     const weekday = req.query.day || 'segunda';
+    console.log('Buscando escalas para o dia:', weekday);
 
     // Buscar todas as escalas do dia
     const result = await pool.query(
@@ -35,12 +38,15 @@ export default async function handler(req, res) {
       [weekday]
     );
     
-    // Log para debug
     console.log('Escalas encontradas:', result.rows);
     
     return res.status(200).json(result.rows);
   } catch (error) {
     console.error('Erro ao buscar escalas:', error);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
+    return res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      details: error.message,
+      stack: error.stack
+    });
   }
 } 
