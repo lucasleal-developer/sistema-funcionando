@@ -2,7 +2,7 @@ import { pool } from '../../server/db.js';
 
 export default async function handler(req, res) {
   console.log('Iniciando endpoint /api/professionals');
-  console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Definida' : 'Não definida');
+  console.log('Método:', req.method);
 
   // Configurar CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -19,58 +19,82 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('Tentando conectar ao banco de dados...');
-    
-    // Primeiro, testar a conexão
-    try {
-      const testResult = await pool.query('SELECT NOW()');
-      console.log('Conexão com banco de dados estabelecida:', testResult.rows[0]);
-    } catch (connError) {
-      console.error('Erro ao testar conexão:', connError);
-      return res.status(500).json({ 
-        error: 'Erro ao conectar ao banco de dados',
-        details: connError.message
-      });
-    }
+    switch (req.method) {
+      case 'GET':
+        console.log('Buscando todos os professores...');
+        const result = await pool.query('SELECT * FROM professionals ORDER BY name');
+        console.log('Professores encontrados:', result.rows);
+        return res.status(200).json(result.rows);
 
-    // Verificar se a tabela existe
-    try {
-      const tableCheck = await pool.query(`
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public'
-          AND table_name = 'professionals'
+      case 'POST':
+        console.log('Criando novo professor:', req.body);
+        const { name, initials, active = 1 } = req.body;
+        
+        if (!name || !initials) {
+          return res.status(400).json({ 
+            error: 'Dados inválidos',
+            details: 'Nome e iniciais são obrigatórios'
+          });
+        }
+
+        const insertResult = await pool.query(
+          'INSERT INTO professionals (name, initials, active) VALUES ($1, $2, $3) RETURNING *',
+          [name, initials, active]
         );
-      `);
-      console.log('Tabela professionals existe?', tableCheck.rows[0].exists);
-      
-      if (!tableCheck.rows[0].exists) {
-        return res.status(500).json({ 
-          error: 'Tabela professionals não existe',
-          details: 'A tabela não foi criada no banco de dados'
-        });
-      }
-    } catch (tableError) {
-      console.error('Erro ao verificar tabela:', tableError);
-      return res.status(500).json({ 
-        error: 'Erro ao verificar tabela',
-        details: tableError.message
-      });
-    }
+        
+        console.log('Professor criado:', insertResult.rows[0]);
+        return res.status(201).json(insertResult.rows[0]);
 
-    // Buscar todos os profissionais
-    console.log('Buscando profissionais...');
-    const result = await pool.query('SELECT * FROM professionals ORDER BY name');
-    
-    console.log('Profissionais encontrados:', result.rows);
-    
-    return res.status(200).json(result.rows);
+      case 'PUT':
+        console.log('Atualizando professor:', req.query.id);
+        const id = Number(req.query.id);
+        const updateData = req.body;
+        
+        if (!id) {
+          return res.status(400).json({ error: 'ID não fornecido' });
+        }
+
+        const updateResult = await pool.query(
+          'UPDATE professionals SET name = $1, initials = $2, active = $3 WHERE id = $4 RETURNING *',
+          [updateData.name, updateData.initials, updateData.active, id]
+        );
+
+        if (updateResult.rows.length === 0) {
+          return res.status(404).json({ error: 'Professor não encontrado' });
+        }
+
+        console.log('Professor atualizado:', updateResult.rows[0]);
+        return res.status(200).json(updateResult.rows[0]);
+
+      case 'DELETE':
+        console.log('Excluindo professor:', req.query.id);
+        const deleteId = Number(req.query.id);
+        
+        if (!deleteId) {
+          return res.status(400).json({ error: 'ID não fornecido' });
+        }
+
+        const deleteResult = await pool.query(
+          'DELETE FROM professionals WHERE id = $1 RETURNING *',
+          [deleteId]
+        );
+
+        if (deleteResult.rows.length === 0) {
+          return res.status(404).json({ error: 'Professor não encontrado' });
+        }
+
+        console.log('Professor excluído com sucesso');
+        return res.status(204).end();
+
+      default:
+        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+        return res.status(405).json({ error: `Método ${req.method} não permitido` });
+    }
   } catch (error) {
-    console.error('Erro ao buscar profissionais:', error);
+    console.error('Erro ao processar requisição:', error);
     return res.status(500).json({ 
       error: 'Erro interno do servidor',
-      details: error.message,
-      stack: error.stack
+      details: error.message
     });
   }
 } 
