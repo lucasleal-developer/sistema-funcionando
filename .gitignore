@@ -1,13 +1,36 @@
-node_modules
-dist
-dist-ssr
+# Arquivos de configuração
+.env
+config.php
+
+# Arquivos de sistema
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+Thumbs.db
+
+# Diretórios de dependências
+/vendor/
+/node_modules/
+
+# Arquivos de log
+*.log
+error_log
+access_log
+
+# Arquivos de cache
+*.cache
+*.tmp
+
+# Arquivos de IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de backup
+*.bak
+*.backup
+*~
 
 # Ignorar arquivos de ambiente local
-.env
 .env.local
 .env.development.local
 .env.test.local
@@ -15,3 +38,8 @@ vite.config.ts.*
 
 # Ignorar build Vercel
 .vercel
+
+node_modules
+dist
+dist-ssr
+*.tar.gz
