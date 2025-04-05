@@ -2,12 +2,19 @@ import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
 import * as schema from "@shared/schema";
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
+import path from 'path';
 
 // Carrega as variáveis de ambiente do arquivo .env
-dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 neonConfig.webSocketConstructor = ws;
+
+// Log para debug
+console.log('Diretório atual:', process.cwd());
+console.log('Arquivo .env:', path.resolve(process.cwd(), '.env'));
+console.log('DATABASE_URL definida:', !!process.env.DATABASE_URL);
+console.log('DATABASE_URL valor:', process.env.DATABASE_URL ? '[DEFINIDA]' : '[NÃO DEFINIDA]');
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -16,7 +23,6 @@ if (!process.env.DATABASE_URL) {
 }
 
 console.log('Configurando conexão com o banco de dados...');
-console.log('DATABASE_URL definida:', !!process.env.DATABASE_URL);
 
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
