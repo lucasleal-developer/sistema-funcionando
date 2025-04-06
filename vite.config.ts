@@ -13,6 +13,7 @@ export default defineConfig({
     runtimeErrorOverlay(),
     themePlugin(),
   ],
+  root: path.resolve(__dirname, "client"),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client/src"),
