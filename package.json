@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx --env-file=.env.development server/index.ts",
-    "build": "tsc -p tsconfig.server.json && cp -r api dist/ && cp -r shared dist/",
+    "build": "tsc -p tsconfig.server.json && cp -r api dist/ && cp -r shared dist/ && mkdir -p dist/client && cp client/index.html dist/client/",
     "start": "NODE_ENV=production node dist/server/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push"
