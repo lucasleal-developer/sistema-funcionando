@@ -8,7 +8,7 @@
     "build:client": "vite build",
     "build:server": "tsc -p tsconfig.server.json && tsc -p tsconfig.json && cp -r api dist/ && cp -r shared dist/",
     "build": "npm run build:client && npm run build:server",
-    "start": "NODE_ENV=production node dist/index.js",
+    "start": "NODE_ENV=production node dist/server/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },
