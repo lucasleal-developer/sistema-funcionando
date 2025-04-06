@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx --env-file=.env.development server/index.ts",
-    "build": "tsc -p tsconfig.server.json && cp -r api dist/ && cp -r shared dist/ && mkdir -p dist/client && cp client/index.html dist/client/",
+    "build": "rm -rf dist && tsc -p tsconfig.server.json && cp -r api dist/ && cp -r shared dist/ && mkdir -p dist/client && cp client/index.html dist/client/",
     "start": "node dist/server/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push"
@@ -20,17 +20,17 @@
     "express-session": "^1.18.1",
     "pg": "^8.14.1",
     "ws": "^8.18.0",
-    "zod": "^3.23.8",
-    "typescript": "5.6.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "4.17.21",
     "@types/express-session": "^1.18.0",
     "@types/node": "^20.16.11",
     "@types/pg": "^8.11.2",
-    "@types/ws": "^8.5.13"
-  },
-  "devDependencies": {
+    "@types/ws": "^8.5.13",
     "drizzle-kit": "^0.30.4",
-    "tsx": "^4.19.1"
+    "tsx": "^4.19.1",
+    "typescript": "5.6.3"
   }
 }
