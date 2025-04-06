@@ -65,7 +65,7 @@ class PostgresStorage implements IStorage {
     try {
       log('[DEBUG] Buscando todos os profissionais');
       const result = await this.db.select().from(professionals);
-      log('[DEBUG] Profissionais encontrados:', result.length);
+      log('[DEBUG] Profissionais encontrados: ' + String(result.length));
       return result;
     } catch (error) {
       log('[ERROR] Erro ao buscar profissionais:', error instanceof Error ? error.message : String(error));
@@ -118,7 +118,7 @@ class PostgresStorage implements IStorage {
     try {
       log('[DEBUG] Buscando todos os tipos de atividades');
       const result = await this.db.select().from(activityTypeTable);
-      log('[DEBUG] Tipos de atividades encontrados:', result.length);
+      log('[DEBUG] Tipos de atividades encontrados: ' + String(result.length));
       return result;
     } catch (error) {
       log('[ERROR] Erro ao buscar tipos de atividades:', error instanceof Error ? error.message : String(error));
