@@ -67,15 +67,6 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Configura o ambiente de desenvolvimento ou produção
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    // Em produção, serve os arquivos estáticos antes das rotas da API
-    serveStatic(app);
-  }
-
-  // Middleware de erro após as rotas
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -83,6 +74,12 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
+
+  if (app.get("env") === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
 
   // Usa a porta fornecida pela Vercel ou a porta padrão
   const port = process.env.PORT ? parseInt(process.env.PORT) : (app.get("env") === "development" ? 3000 : 5000);
