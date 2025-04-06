@@ -6,7 +6,7 @@ import {
   activityTypeTable, type ActivityType, type InsertActivityType,
   defaultActivityTypes,
   type WeekDay
-} from "@shared/schema";
+} from "../shared/schema.js";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq, and } from "drizzle-orm";
 import { pool } from './db.js';
