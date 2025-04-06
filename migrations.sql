@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS time_slots (
   start_time TEXT NOT NULL,
   end_time TEXT NOT NULL,
   interval INTEGER NOT NULL DEFAULT 30,
-  is_base_slot INTEGER NOT NULL DEFAULT 1
+  is_base_slot INTEGER NOT NULL DEFAULT 1,
+  UNIQUE(start_time, end_time)
 );
 
 CREATE TABLE IF NOT EXISTS schedules (
