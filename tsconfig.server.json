@@ -6,9 +6,10 @@
     "outDir": "dist/server",
     "rootDir": ".",
     "paths": {
-      "@/*": ["./client/src/*"],
       "@shared/*": ["./shared/*"]
-    }
+    },
+    "noEmit": false,
+    "allowImportingTsExtensions": false
   },
   "include": ["server/**/*", "shared/**/*"],
   "exclude": ["node_modules", "dist", "client"]
