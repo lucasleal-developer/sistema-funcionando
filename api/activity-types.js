@@ -1,5 +1,5 @@
 import { storage } from '../server/storage.js';
-import { insertActivityTypeSchema } from '../shared/schema';
+import { insertActivityTypeSchema } from '../shared/schema.js';
 
 export default async function handler(req, res) {
   const method = req.method;

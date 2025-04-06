@@ -1,5 +1,5 @@
 import { storage } from '../server/storage.js';
-import { insertTimeSlotSchema } from '../shared/schema';
+import { insertTimeSlotSchema } from '../shared/schema.js';
 
 export default async function handler(req, res) {
   const method = req.method;

@@ -1,5 +1,5 @@
 import { storage } from '../server/storage.js';
-import { insertProfessionalSchema } from '../shared/schema';
+import { insertProfessionalSchema } from '../shared/schema.js';
 
 export default async function handler(req, res) {
   const method = req.method;
