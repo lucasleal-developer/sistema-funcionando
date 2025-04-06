@@ -27,6 +27,7 @@
   ],
   "env": {
     "DATABASE_URL": "postgresql://neondb_owner:npg_vTrWVjeqkf93@ep-muddy-bar-acg7auww-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require",
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "POSTGRES_SSL": "true"
   }
 }

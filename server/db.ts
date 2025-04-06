@@ -4,32 +4,51 @@ import ws from "ws";
 import * as schema from "@shared/schema";
 import * as dotenv from 'dotenv';
 import path from 'path';
+import { log } from './vite';
 
 // Carrega as variáveis de ambiente do arquivo .env
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+const envFile = process.env.NODE_ENV === 'development' ? '.env.development' : '.env';
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
 neonConfig.webSocketConstructor = ws;
 
 // URL do banco de dados
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_vTrWVjeqkf93@ep-muddy-bar-acg7auww-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require';
+const DATABASE_URL = process.env.DATABASE_URL;
 
-console.log('Configurando conexão com o banco de dados...');
-console.log('DATABASE_URL definida:', !!DATABASE_URL);
+if (!DATABASE_URL) {
+  throw new Error('DATABASE_URL não está definida! Verifique as variáveis de ambiente.');
+}
+
+log('Configurando conexão com o banco de dados...');
+log(`Ambiente: ${process.env.NODE_ENV || 'não definido'}`);
+log(`Arquivo .env: ${envFile}`);
+log('DATABASE_URL definida e tem comprimento:', DATABASE_URL.length);
 
 export const pool = new Pool({ 
   connectionString: DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeoutMillis: 10000, // 10 segundos
+  idleTimeoutMillis: 10000 // 10 segundos
 });
 
 // Testar conexão ao inicializar
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.error('Erro ao conectar ao banco de dados:', err);
-  } else {
-    console.log('Conexão com banco de dados estabelecida:', res.rows[0]);
-  }
-});
+pool.connect()
+  .then(client => {
+    log('Conexão inicial com o banco estabelecida');
+    client.query('SELECT NOW()', (err, res) => {
+      if (err) {
+        log('Erro ao executar query de teste:', err);
+      } else {
+        log('Query de teste executada com sucesso:', res.rows[0]);
+      }
+      client.release();
+    });
+  })
+  .catch(err => {
+    log('Erro ao estabelecer conexão inicial:', err);
+    throw err;
+  });
 
 export const db = drizzle({ client: pool, schema });
