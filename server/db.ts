@@ -22,7 +22,7 @@ if (!DATABASE_URL) {
 log('Configurando conexão com o banco de dados...');
 log(`Ambiente: ${process.env.NODE_ENV || 'não definido'}`);
 log(`Arquivo .env: ${envFile}`);
-log('DATABASE_URL definida e tem comprimento:', DATABASE_URL.length);
+log('DATABASE_URL definida e tem comprimento: ' + DATABASE_URL.length.toString());
 
 export const pool = new Pool({ 
   connectionString: DATABASE_URL,
@@ -39,7 +39,7 @@ pool.connect()
     log('Conexão inicial com o banco estabelecida');
     client.query('SELECT NOW()', (err, res) => {
       if (err) {
-        log('Erro ao executar query de teste:', err);
+        log('Erro ao executar query de teste: ' + err.message);
       } else {
         log('Query de teste executada com sucesso:', res.rows[0]);
       }
@@ -47,7 +47,7 @@ pool.connect()
     });
   })
   .catch(err => {
-    log('Erro ao estabelecer conexão inicial:', err);
+    log('Erro ao estabelecer conexão inicial: ' + err.message);
     throw err;
   });
 
