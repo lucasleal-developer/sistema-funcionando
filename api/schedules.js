@@ -1,4 +1,4 @@
-import { storage } from '../server/storage';
+import { storage } from '../server/storage.js';
 import { insertScheduleSchema } from '../shared/schema';
 
 export default async function handler(req, res) {

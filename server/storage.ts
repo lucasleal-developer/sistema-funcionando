@@ -9,8 +9,8 @@ import {
 } from "@shared/schema";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { eq, and } from "drizzle-orm";
-import { pool } from './db';
-import { log } from './vite';
+import { pool } from './db.js';
+import { log } from './vite.js';
 
 // Interface de armazenamento
 export interface IStorage {
