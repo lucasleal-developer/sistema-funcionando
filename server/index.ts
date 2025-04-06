@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeNeonDb } from "./neondb";
 import { runMigrations } from "./runMigrations";
+import cors from 'cors';
 
 log("Usando banco de dados Neon PostgreSQL");
 
@@ -25,6 +26,10 @@ log("Usando banco de dados Neon PostgreSQL");
 })();
 
 const app = express();
+
+// Configuração do CORS
+app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -69,21 +74,19 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // Em desenvolvimento, usa a porta 3000 e localhost
-  const isDev = app.get("env") === "development";
-  const port = isDev ? 3000 : 5000;
-  const host = isDev ? "localhost" : "0.0.0.0";
+  // Usa a porta fornecida pela Vercel ou a porta padrão
+  const port = process.env.PORT || (app.get("env") === "development" ? 3000 : 5000);
+  const host = app.get("env") === "development" ? "localhost" : "0.0.0.0";
 
   server.listen(port, host, () => {
     log(`Servidor rodando em http://${host}:${port}`);
+    log(`Ambiente: ${app.get("env")}`);
+    log(`DATABASE_URL definida: ${!!process.env.DATABASE_URL}`);
   });
 })();
