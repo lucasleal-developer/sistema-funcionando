@@ -5,8 +5,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx --env-file=.env.development server/index.ts",
-    "build": "vite build && tsc && cp -r api dist/ && cp -r shared dist/",
-    "start": "NODE_ENV=production node dist/index.js",
+    "build:client": "vite build",
+    "build:server": "tsc -p tsconfig.server.json && cp -r api dist/ && cp -r shared dist/",
+    "build": "npm run build:server",
+    "start": "NODE_ENV=production node dist/server/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },

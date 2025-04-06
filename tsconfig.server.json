@@ -4,13 +4,12 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "dist/server",
-    "noEmit": false,
-    "allowImportingTsExtensions": false,
-    "baseUrl": ".",
+    "rootDir": ".",
     "paths": {
-      "@shared/*": ["shared/*"]
+      "@/*": ["./client/src/*"],
+      "@shared/*": ["./shared/*"]
     }
   },
   "include": ["server/**/*", "shared/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist", "client"]
 } 
