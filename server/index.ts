@@ -33,6 +33,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Middleware de logging
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -81,11 +82,10 @@ app.use((req, res, next) => {
   }
 
   // Usa a porta fornecida pela Vercel ou a porta padrão
-  const port = process.env.PORT || (app.get("env") === "development" ? 3000 : 5000);
-  const host = app.get("env") === "development" ? "localhost" : "0.0.0.0";
+  const port = process.env.PORT ? parseInt(process.env.PORT) : (app.get("env") === "development" ? 3000 : 5000);
 
-  server.listen(port, host, () => {
-    log(`Servidor rodando em http://${host}:${port}`);
+  server.listen(port, () => {
+    log(`Servidor rodando na porta ${port}`);
     log(`Ambiente: ${app.get("env")}`);
     log(`DATABASE_URL definida: ${!!process.env.DATABASE_URL}`);
   });
